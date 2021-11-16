@@ -23,6 +23,20 @@ def references() :
             references.append(resultat.group())
    return json.dumps(references)
 
+@app.route('/recherche/<critere>')
+def recherche_critere(critere) :
+   print("/recherche/"+critere)
+   lignes = []
+   liste = os.listdir("BD_desserts")
+   for fichier in liste :
+      fd = open("BD_desserts/"+fichier)
+      for ligne in fd.readlines() :
+         res1 = re.search("muffin", ligne)
+         res2 = re.search(""+critere, ligne)
+         if res1 and res2 :
+            lignes.append(ligne)
+   return json.dumps(lignes)
+
 @app.route('/hello/<param1>')  # ex. route : localhost:5000/hello/Pierre
 def hello1(param1):
    return "Bonjour "+param1
