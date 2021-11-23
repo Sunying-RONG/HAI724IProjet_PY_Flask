@@ -1,0 +1,31 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h2>Recherche</h2>
+        <p>critere : <input type="input" id="critere"></p>
+        <button onclick="recherche()">Va chercher</button>
+        <hr/>
+        <h2>Résultats</h2>
+        <ul id="resultats"/>
+    </body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript"></script>
+    <script>
+        function recherche() {
+            var critere = $("#critere").val();
+            console.log("Dans recherche() avec "+critere);
+            $.getJSON("Access-Control-Allow-Origin: http://localhost:5000/recherche/"+critere, function(reponses) {
+                for (let reponse of reponses) {
+                    console.log("reponse :", reponse);
+                    let url = "https://fr.wikipedia.org/w/index.php?title="+reponse[0];
+                    let html = "<li>";
+                    let phrase = reponse[1].replace(critere, "<font color=’red’><b>"+critere+"</b></font>");
+                    html += "<a href=’"+url+"’>"+reponse[0]+"</a> : "+phrase;
+                    html += "</li>";
+                    $("#resultats").append(html);
+                }
+            });
+        }
+    </script>
+</html>

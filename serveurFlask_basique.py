@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# lancer par python3 fichier.py
 import os, json, re
 os.system("clear")
 
@@ -18,7 +19,7 @@ def references() :
       print(fichier)
       fd = open("BD_desserts/"+fichier)
       for ligne in fd.readlines() :
-         resultat = re.search("muffin", ligne)
+         resultat = re.search("(chocolat)", ligne, re.IGNORECASE)
          if resultat : # resultat est une zone memoire qui a ete crees 
             references.append(resultat.group())
    return json.dumps(references)
@@ -31,8 +32,8 @@ def recherche_critere(critere) :
    for fichier in liste :
       fd = open("BD_desserts/"+fichier)
       for ligne in fd.readlines() :
-         res1 = re.search("muffin", ligne)
-         res2 = re.search(""+critere, ligne)
+         res1 = re.search("chocolat", ligne, re.IGNORECASE)
+         res2 = re.search(""+critere, ligne, re.IGNORECASE)
          if res1 and res2 :
             lignes.append(ligne)
    return json.dumps(lignes)
