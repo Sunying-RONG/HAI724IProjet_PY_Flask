@@ -62,23 +62,19 @@ def recherche_critere(criteres):
    regexTousCriteres = ""
    regexOuCriteres = ""
    for critere in listecriteres :
-      regexTousCriteres = regexTousCriteres + critere + ".*"
-      regexOuCriteres = regexOuCriteres + critere + "|"
-      # eg "aa.*cc.*" match "aa bb cc dd"
-  
+      regexTousCriteres = regexTousCriteres + critere + ".*" # eg "aa.*cc" match "aa bb cc dd"
+      regexOuCriteres = regexOuCriteres + critere + "|" # eg "aa|cc" match "bb cc dd"
    regexTousCriteres = regexTousCriteres[:-2]
    regexOuCriteres = regexOuCriteres[:-1]
    print(regexTousCriteres)
    print(regexOuCriteres)
+
    liste = os.listdir("BD_desserts")
    fichierTrouve = []
    # afficher une ligne de fichier qui comprend tous les critères, sinon qui comprend au moins, n'import quel critère
    lignes = []
    for fichier in liste :
       fd = open("BD_desserts/"+fichier)
-      # dans chaque fichier
-      # tousTrouve = False
-      # while not tousTrouve :
       for ligne in fd.readlines() :
          resTous = re.search(regexTousCriteres, ligne, re.IGNORECASE)
          print(resTous)
@@ -86,7 +82,7 @@ def recherche_critere(criteres):
             lignes.append([fichier, ligne])
             fichierTrouve.append(fichier)
             break
-            # tousTrouve = True
+           
    for fichier in liste :
       if fichier not in fichierTrouve :
          fd = open("BD_desserts/"+fichier)
