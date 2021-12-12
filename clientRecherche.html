@@ -28,12 +28,19 @@
                     let html = "<li>";
                     let phrase = reponse[1];
                     for (let c of criteresList) {
-                        phrase = phrase.replace(c, "<font color='red'><b>"+c+"</b></font>");
+                        console.log(c);
+                        if (c.startsWith('"') && c.endsWith('"')) {
+                            c = c.substr(1, c.length-2);
+                            console.log("##",c);
+                        }
+                        var pattern = new RegExp(c, 'gi');
+                        phrase = phrase.replace(pattern, "<font color='red'><b>"+c+"</b></font>");
                     }
                     html += "<a href='"+url+"' target='_blank'>"
                         +reponse[0]+"</a> : "
                         +phrase;
                     html += "</li>";
+                    console.log(html);
                     $("#resultats").append(html);
                 }
             });

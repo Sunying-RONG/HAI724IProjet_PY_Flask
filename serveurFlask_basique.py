@@ -68,13 +68,23 @@ def recherche_critere(criteres):
    print("listecriteres: ", listecriteres)
    regexTousCriteres = ""
    regexOuCriteres = ""
+   regexMustCristeres = ""
+   mustList = []
    for critere in listecriteres :
+      if (critere[0:1]=='"' and critere[-1:]=='"') :
+         critere = critere[1:-1]
+         print(critere)
+         regexMustCristeres = regexMustCristeres + critere + ".*"
+
       regexTousCriteres = regexTousCriteres + critere + ".*" # eg "aa.*cc" match "aa bb cc dd"
       regexOuCriteres = regexOuCriteres + critere + "|" # eg "aa|cc" match "bb cc dd"
+
    regexTousCriteres = regexTousCriteres[:-2]
    regexOuCriteres = regexOuCriteres[:-1]
+   regexMustCristeres = regexMustCristeres[:-2]
    print(regexTousCriteres)
    print(regexOuCriteres)
+   print(regexMustCristeres)
 
    liste = os.listdir("BD_desserts")
    fichierTrouve = []
@@ -84,7 +94,7 @@ def recherche_critere(criteres):
       fd = open("BD_desserts/"+fichier)
       for ligne in fd.readlines() :
          resTous = re.search(regexTousCriteres, ligne, re.IGNORECASE)
-         print(resTous)
+         # print(resTous)
          if resTous :
             lignes.append([fichier, ligne])
             fichierTrouve.append(fichier)
@@ -93,12 +103,19 @@ def recherche_critere(criteres):
    for fichier in liste :
       if fichier not in fichierTrouve :
          fd = open("BD_desserts/"+fichier)
-         for ligne in fd.readlines() :
-            res = re.search(regexOuCriteres, ligne, re.IGNORECASE)
-            print(res)
-            if res : 
-               lignes.append([fichier, ligne])
-               break
+         if len(regexMustCristeres) > 0 :
+            for ligne in fd.readlines() :
+               resMust = re.search(regexMustCristeres, ligne, re.IGNORECASE)
+               if resMust :
+                  lignes.append([fichier, ligne])
+                  break
+         else :
+            for ligne in fd.readlines() :
+               res = re.search(regexOuCriteres, ligne, re.IGNORECASE)
+               # print(res)
+               if res : 
+                  lignes.append([fichier, ligne])
+                  break
    return json.dumps(lignes)
 
 # @app.route('/hello/<param1>')  # ex. route : localhost:5000/hello/Pierre
