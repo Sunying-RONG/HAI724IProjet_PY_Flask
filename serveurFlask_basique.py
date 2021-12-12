@@ -19,8 +19,15 @@ def index():
 @app.route('/image/<fichier>')  # route qui renvoie une image
 def image(fichier):
    print('/image/'+fichier)
-   if os.path.isfile("IMAGES/"+fichier) :
-       return app.send_static_file("IMAGES/"+fichier)
+   if os.path.isfile("image/"+fichier) :
+      return app.send_static_file("image/"+fichier)
+   return fichier+"non accessible"
+
+@app.route('/style/<fichier>')
+def style(fichier):
+   print('/style/'+fichier)
+   if os.path.isfile(fichier) :
+      return app.send_static_file(fichier)
    return fichier+"non accessible"
 
 # @app.route('/references')
