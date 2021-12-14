@@ -69,26 +69,25 @@ def recherche_critere(criteres):
    regexTousCriteres = ""
    regexOuCriteres = ""
    regexMustCristeres = ""
-   mustList = []
+
    for critere in listecriteres :
       if (critere[0:1]=='"' and critere[-1:]=='"') :
          critere = critere[1:-1]
          print(critere)
-         regexMustCristeres = regexMustCristeres + critere + ".*"
+         regexMustCristeres = regexMustCristeres+"(?=.*"+critere+")"
+      regexTousCriteres = regexTousCriteres+"(?=.*"+critere+")"
+      regexOuCriteres = regexOuCriteres + critere + "|" 
 
-      regexTousCriteres = regexTousCriteres + critere + ".*" # eg "aa.*cc" match "aa bb cc dd"
-      regexOuCriteres = regexOuCriteres + critere + "|" # eg "aa|cc" match "bb cc dd"
-
-   regexTousCriteres = regexTousCriteres[:-2]
-   regexOuCriteres = regexOuCriteres[:-1]
-   regexMustCristeres = regexMustCristeres[:-2]
+   regexTousCriteres = regexTousCriteres+".*" # eg (?=.*jack)(?=.*james).* - match jack and james in any order: jack and james. james and jack.
+   regexOuCriteres = regexOuCriteres[:-1] # eg "aa|cc" match "bb cc dd"
+   regexMustCristeres = regexMustCristeres+".*" # in any order
    print(regexTousCriteres)
    print(regexOuCriteres)
    print(regexMustCristeres)
 
    liste = os.listdir("BD_desserts")
    fichierTrouve = []
-   # afficher une ligne de fichier qui comprend tous les critères, sinon qui comprend au moins, n'import quel critère
+   # afficher une ligne de fichier qui comprend tous les critères
    lignes = []
    for fichier in liste :
       fd = open("BD_desserts/"+fichier)
@@ -96,24 +95,29 @@ def recherche_critere(criteres):
          resTous = re.search(regexTousCriteres, ligne, re.IGNORECASE)
          # print(resTous)
          if resTous :
+            print("!",fichier)
             lignes.append([fichier, ligne])
             fichierTrouve.append(fichier)
             break
-           
+   # pour les autre fichiers
    for fichier in liste :
       if fichier not in fichierTrouve :
          fd = open("BD_desserts/"+fichier)
-         if len(regexMustCristeres) > 0 :
+         # s'il y a des criètres obligatoires, qui avec "", afficher une ligne qui comprend ces critères obligatoires.
+         if len(regexMustCristeres) > 0 : 
             for ligne in fd.readlines() :
                resMust = re.search(regexMustCristeres, ligne, re.IGNORECASE)
                if resMust :
+                  print("!",fichier)
                   lignes.append([fichier, ligne])
                   break
+         # s'il y a pas des critères obligatoires, afficher une ligne qui comprend au moins une critère, n'import laquel.
          else :
             for ligne in fd.readlines() :
                res = re.search(regexOuCriteres, ligne, re.IGNORECASE)
                # print(res)
-               if res : 
+               if res :
+                  print("!",fichier)
                   lignes.append([fichier, ligne])
                   break
    return json.dumps(lignes)
