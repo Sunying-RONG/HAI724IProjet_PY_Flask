@@ -19,6 +19,8 @@
             // jQuery
             $("#resultats").empty();
             var criteres = $("#critere").val();
+            // remove space at begining and at the end, keep one space between words
+            criteres = criteres.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
             var criteresList = criteres.split(" ");
             console.log("Dans recherche() avec "+criteres);
             $.getJSON("http://localhost:5000/recherche/"+criteres, function(reponses) {
@@ -31,7 +33,6 @@
                         console.log(c);
                         if (c.startsWith('"') && c.endsWith('"')) {
                             c = c.substr(1, c.length-2);
-                            console.log("##",c);
                         }
                         var pattern = new RegExp(c, 'gi');
                         phrase = phrase.replace(pattern, "<font color='red'><b>"+c+"</b></font>");

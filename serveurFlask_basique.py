@@ -104,7 +104,7 @@ def recherche_critere(criteres):
       if fichier not in fichierTrouve :
          fd = open("BD_desserts/"+fichier)
          # s'il y a des criètres obligatoires, qui avec "", afficher une ligne qui comprend ces critères obligatoires.
-         if len(regexMustCristeres) > 0 : 
+         if len(regexMustCristeres) > 2 : # s'il n'y a pas de mot clé obligatoire, regexMustCristeres est .*
             for ligne in fd.readlines() :
                resMust = re.search(regexMustCristeres, ligne, re.IGNORECASE)
                if resMust :
